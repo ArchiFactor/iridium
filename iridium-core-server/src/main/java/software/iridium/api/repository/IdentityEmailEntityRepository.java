@@ -13,6 +13,8 @@ package software.iridium.api.repository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import software.iridium.entity.IdentityEmailEntity;
 
 public interface IdentityEmailEntityRepository extends JpaRepository<IdentityEmailEntity, String> {
@@ -22,6 +24,12 @@ public interface IdentityEmailEntityRepository extends JpaRepository<IdentityEma
   Optional<IdentityEmailEntity> findByEmailAddressAndIdentity_ParentTenantId(
       final String emailAddress, final String parentTenantId);
 
+  @Query(
+      "SELECT e FROM IdentityEmailEntity e WHERE e.emailAddress = :emailAddress"
+          + " AND e.identity.parentTenantId = :parentTenantId"
+          + " AND e.identity.providerId = :providerId")
   Optional<IdentityEmailEntity> findByEmailAddressAndIdentity_ParentTenantIdAndIdentity_Provider_Id(
-      final String emailAddress, final String parentTenantId, final String providerId);
+      @Param("emailAddress") final String emailAddress,
+      @Param("parentTenantId") final String parentTenantId,
+      @Param("providerId") final String providerId);
 }

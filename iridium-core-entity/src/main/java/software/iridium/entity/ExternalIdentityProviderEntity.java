@@ -35,14 +35,12 @@ public class ExternalIdentityProviderEntity extends AbstractEntity {
   @Column(name = "client_secret", length = 255, nullable = true)
   private String clientSecret;
 
-  @Transient
-private ExternalIdentityProviderTemplateEntity template;
+  @Transient private ExternalIdentityProviderTemplateEntity template;
 
   @Column(name = "external_identity_provider_template_id")
   private String externalIdentityProviderTemplateId;
 
-  @Transient
-private TenantEntity tenant;
+  @Transient private TenantEntity tenant;
 
   @Column(name = "tenant_id")
   private String tenantId;
@@ -94,18 +92,21 @@ private TenantEntity tenant;
   private Map<String, String> accessTokenParameters = new HashMap<>();
 
   public ExternalIdentityProviderTemplateEntity getTemplate() {
-	if (template == null && externalIdentityProviderTemplateId != null && ServiceFactory.isContainerAvailable()) {
-		ExternalIdentityProviderTemplateEntityService externalIdentityProviderTemplateEntityService = ServiceFactory
-				.getExternalIdentityProviderTemplateEntityService();
-		template = externalIdentityProviderTemplateEntityService
-				.getExternalIdentityProviderTemplateEntityById(externalIdentityProviderTemplateId);
-	}
-	return template;
-}
+    if (template == null
+        && externalIdentityProviderTemplateId != null
+        && ServiceFactory.isContainerAvailable()) {
+      ExternalIdentityProviderTemplateEntityService externalIdentityProviderTemplateEntityService =
+          ServiceFactory.getExternalIdentityProviderTemplateEntityService();
+      template =
+          externalIdentityProviderTemplateEntityService
+              .getExternalIdentityProviderTemplateEntityById(externalIdentityProviderTemplateId);
+    }
+    return template;
+  }
 
   public void setTemplate(final ExternalIdentityProviderTemplateEntity template) {
     this.template = template;
-	this.externalIdentityProviderTemplateId = template != null ? template.getId() : null;
+    this.externalIdentityProviderTemplateId = template != null ? template.getId() : null;
   }
 
   public String getClientId() {
@@ -125,16 +126,16 @@ private TenantEntity tenant;
   }
 
   public TenantEntity getTenant() {
-	if (tenant == null && tenantId != null && ServiceFactory.isContainerAvailable()) {
-		TenantEntityService tenantEntityService = ServiceFactory.getTenantEntityService();
-		tenant = tenantEntityService.getTenantEntityById(tenantId);
-	}
-	return tenant;
-}
+    if (tenant == null && tenantId != null && ServiceFactory.isContainerAvailable()) {
+      TenantEntityService tenantEntityService = ServiceFactory.getTenantEntityService();
+      tenant = tenantEntityService.getTenantEntityById(tenantId);
+    }
+    return tenant;
+  }
 
   public void setTenant(final TenantEntity tenant) {
     this.tenant = tenant;
-	this.tenantId = tenant != null ? tenant.getId() : null;
+    this.tenantId = tenant != null ? tenant.getId() : null;
   }
 
   public List<ExternalIdentityProviderParameterEntity> getProperties() {
@@ -220,11 +221,11 @@ private TenantEntity tenant;
   @PrePersist
   @PreUpdate
   private void syncUnmappedForeignKeys() {
-	if (this.template != null) {
-		this.externalIdentityProviderTemplateId = this.template.getId();
-	}
-	if (this.tenant != null) {
-		this.tenantId = this.tenant.getId();
-	}
+    if (this.template != null) {
+      this.externalIdentityProviderTemplateId = this.template.getId();
+    }
+    if (this.tenant != null) {
+      this.tenantId = this.tenant.getId();
+    }
   }
 }

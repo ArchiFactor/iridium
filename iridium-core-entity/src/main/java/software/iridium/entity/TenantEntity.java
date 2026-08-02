@@ -41,7 +41,7 @@ public class TenantEntity extends AbstractEntity {
   private LoginDescriptorEntity loginDescriptor;
 
   @Transient
-private List<ExternalIdentityProviderEntity> externalIdentityProviders = new ArrayList<>();
+  private List<ExternalIdentityProviderEntity> externalIdentityProviders = new ArrayList<>();
 
   public List<IdentityEntity> getManagingIdentities() {
     return managingIdentities;
@@ -84,14 +84,17 @@ private List<ExternalIdentityProviderEntity> externalIdentityProviders = new Arr
   }
 
   public List<ExternalIdentityProviderEntity> getExternalIdentityProviders() {
-	if (externalIdentityProviders.isEmpty() && getId() != null && ServiceFactory.isContainerAvailable()) {
-		ExternalIdentityProviderEntityService externalIdentityProviderEntityService = ServiceFactory
-				.getExternalIdentityProviderEntityService();
-		externalIdentityProviders
-				.addAll(externalIdentityProviderEntityService.getExternalIdentityProviderEntitysByTenantId(getId()));
-	}
-	return externalIdentityProviders;
-}
+    if (externalIdentityProviders.isEmpty()
+        && getId() != null
+        && ServiceFactory.isContainerAvailable()) {
+      ExternalIdentityProviderEntityService externalIdentityProviderEntityService =
+          ServiceFactory.getExternalIdentityProviderEntityService();
+      externalIdentityProviders.addAll(
+          externalIdentityProviderEntityService.getExternalIdentityProviderEntitysByTenantId(
+              getId()));
+    }
+    return externalIdentityProviders;
+  }
 
   public void setExternalIdentityProviders(
       final List<ExternalIdentityProviderEntity> externalIdentityProviders) {

@@ -19,7 +19,7 @@ import software.iridium.entity.IdentityEntity;
 
 public interface IdentityEntityRepository extends JpaRepository<IdentityEntity, String> {
 
-  Optional<IdentityEntity> findByProvider_IdAndExternalId(
+  Optional<IdentityEntity> findByProviderIdAndExternalId(
       final String providerId, final String externalId);
 
   List<IdentityEntity> findAllByParentTenantIdAndCreatedAfterAndActiveTrue(
