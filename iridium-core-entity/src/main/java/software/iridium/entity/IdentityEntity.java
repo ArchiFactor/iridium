@@ -56,9 +56,11 @@ public class IdentityEntity extends AbstractEntity {
   @JoinColumn(name = "create_session_details_id")
   private IdentityCreateSessionDetails createSessionDetails;
 
-  @ManyToOne(optional = true)
-  @JoinColumn(name = "provider_id")
-  private ExternalIdentityProviderEntity provider;
+  @Transient
+private ExternalIdentityProviderEntity provider;
+
+  @Column(name = "provider_id")
+  private String providerId;
 
   @Column(name = "parent_tenant_id", length = 36, nullable = false)
   private String parentTenantId;
@@ -140,11 +142,17 @@ public class IdentityEntity extends AbstractEntity {
   }
 
   public ExternalIdentityProviderEntity getProvider() {
-    return provider;
-  }
+	if (provider == null && providerId != null && ServiceFactory.isContainerAvailable()) {
+		ExternalIdentityProviderEntityService externalIdentityProviderEntityService = ServiceFactory
+				.getExternalIdentityProviderEntityService();
+		provider = externalIdentityProviderEntityService.getExternalIdentityProviderEntityById(providerId);
+	}
+	return provider;
+}
 
   public void setProvider(final ExternalIdentityProviderEntity provider) {
     this.provider = provider;
+	this.providerId = provider != null ? provider.getId() : null;
   }
 
   public List<IdentityPropertyEntity> getIdentityProperties() {
@@ -215,5 +223,13 @@ public class IdentityEntity extends AbstractEntity {
 
   public void setCreateSessionDetails(final IdentityCreateSessionDetails createSessionDetails) {
     this.createSessionDetails = createSessionDetails;
+  }
+
+  @PrePersist
+  @PreUpdate
+  private void syncUnmappedForeignKeys() {
+	if (this.provider != null) {
+		this.providerId = this.provider.getId();
+	}
   }
 }

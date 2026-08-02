@@ -40,8 +40,8 @@ public class TenantEntity extends AbstractEntity {
   @JoinColumn(name = "login_descriptor_id")
   private LoginDescriptorEntity loginDescriptor;
 
-  @OneToMany(mappedBy = "tenant", fetch = FetchType.EAGER)
-  private List<ExternalIdentityProviderEntity> externalIdentityProviders = new ArrayList<>();
+  @Transient
+private List<ExternalIdentityProviderEntity> externalIdentityProviders = new ArrayList<>();
 
   public List<IdentityEntity> getManagingIdentities() {
     return managingIdentities;
@@ -84,8 +84,14 @@ public class TenantEntity extends AbstractEntity {
   }
 
   public List<ExternalIdentityProviderEntity> getExternalIdentityProviders() {
-    return externalIdentityProviders;
-  }
+	if (externalIdentityProviders.isEmpty() && getId() != null && ServiceFactory.isContainerAvailable()) {
+		ExternalIdentityProviderEntityService externalIdentityProviderEntityService = ServiceFactory
+				.getExternalIdentityProviderEntityService();
+		externalIdentityProviders
+				.addAll(externalIdentityProviderEntityService.getExternalIdentityProviderEntitysByTenantId(getId()));
+	}
+	return externalIdentityProviders;
+}
 
   public void setExternalIdentityProviders(
       final List<ExternalIdentityProviderEntity> externalIdentityProviders) {

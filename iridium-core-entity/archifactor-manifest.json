@@ -1,0 +1,102 @@
+{
+  "tool": "ArchiFactor",
+  "manifestVersion": 1,
+  "refactoring": "Unmap JPA Relationships",
+  "description": "The JPA relationship mappings listed below were unmapped: each association field was made @Transient and is now lazy-loaded through a generated service. Owning sides keep the relationship data in a new foreign-key or element-collection field. The database schema is unchanged, so native SQL queries are unaffected; only object-model queries (JPQL, Criteria API, derived query methods) that traverse the unmapped associations are broken. Relationships that declared cascade or orphanRemoval additionally lose that lifecycle propagation, recorded per relationship under 'droppedSemantics'.",
+  "generatedAt": "2026-08-02T08:22:24.310924600Z",
+  "framework": "Spring Boot",
+  "serviceFactoryClass": "software.iridium.entity.ServiceFactory",
+  "unmappedRelationships": [
+    {
+      "fromEntity": "software.iridium.entity.ExternalIdentityProviderEntity",
+      "fieldName": "template",
+      "relationshipType": "ManyToOne",
+      "toEntity": "software.iridium.entity.ExternalIdentityProviderTemplateEntity",
+      "toEntityIdField": "id",
+      "owningSide": true,
+      "newForeignKeyField": {
+        "name": "externalIdentityProviderTemplateId",
+        "type": "String",
+        "columnName": "external_identity_provider_template_id"
+      },
+      "lazyLoadServiceMethod": {
+        "service": "software.iridium.entity.ExternalIdentityProviderTemplateEntityService",
+        "method": "ExternalIdentityProviderTemplateEntity getExternalIdentityProviderTemplateEntityById(String id)"
+      }
+    },
+    {
+      "fromEntity": "software.iridium.entity.ExternalIdentityProviderEntity",
+      "fieldName": "tenant",
+      "relationshipType": "ManyToOne",
+      "toEntity": "software.iridium.entity.TenantEntity",
+      "toEntityIdField": "id",
+      "owningSide": true,
+      "newForeignKeyField": {
+        "name": "tenantId",
+        "type": "String",
+        "columnName": "tenant_id"
+      },
+      "lazyLoadServiceMethod": {
+        "service": "software.iridium.entity.TenantEntityService",
+        "method": "TenantEntity getTenantEntityById(String id)"
+      }
+    },
+    {
+      "fromEntity": "software.iridium.entity.TenantEntity",
+      "fieldName": "externalIdentityProviders",
+      "relationshipType": "OneToMany",
+      "toEntity": "software.iridium.entity.ExternalIdentityProviderEntity",
+      "toEntityIdField": "id",
+      "owningSide": false,
+      "targetForeignKeyField": "tenantId",
+      "lazyLoadServiceMethod": {
+        "service": "software.iridium.entity.ExternalIdentityProviderEntityService",
+        "method": "List<ExternalIdentityProviderEntity> getExternalIdentityProviderEntitysByTenantId(String tenantId)"
+      }
+    },
+    {
+      "fromEntity": "software.iridium.entity.IdentityEntity",
+      "fieldName": "provider",
+      "relationshipType": "ManyToOne",
+      "toEntity": "software.iridium.entity.ExternalIdentityProviderEntity",
+      "toEntityIdField": "id",
+      "owningSide": true,
+      "newForeignKeyField": {
+        "name": "providerId",
+        "type": "String",
+        "columnName": "provider_id"
+      },
+      "lazyLoadServiceMethod": {
+        "service": "software.iridium.entity.ExternalIdentityProviderEntityService",
+        "method": "ExternalIdentityProviderEntity getExternalIdentityProviderEntityById(String id)"
+      }
+    }
+  ],
+  "generatedServices": [
+    {
+      "entity": "software.iridium.entity.ExternalIdentityProviderTemplateEntity",
+      "interface": "software.iridium.entity.ExternalIdentityProviderTemplateEntityService",
+      "implementation": "software.iridium.entity.ExternalIdentityProviderTemplateEntityServiceImpl",
+      "methods": [
+        "ExternalIdentityProviderTemplateEntity getExternalIdentityProviderTemplateEntityById(String id)"
+      ]
+    },
+    {
+      "entity": "software.iridium.entity.TenantEntity",
+      "interface": "software.iridium.entity.TenantEntityService",
+      "implementation": "software.iridium.entity.TenantEntityServiceImpl",
+      "methods": [
+        "TenantEntity getTenantEntityById(String id)"
+      ]
+    },
+    {
+      "entity": "software.iridium.entity.ExternalIdentityProviderEntity",
+      "interface": "software.iridium.entity.ExternalIdentityProviderEntityService",
+      "implementation": "software.iridium.entity.ExternalIdentityProviderEntityServiceImpl",
+      "methods": [
+        "List<ExternalIdentityProviderEntity> getExternalIdentityProviderEntitysByTenantId(String tenantId)",
+        "ExternalIdentityProviderEntity getExternalIdentityProviderEntityById(String id)"
+      ]
+    }
+  ]
+}
